@@ -46,11 +46,13 @@ void applyBounds(std::shared_ptr<MeshBlock> pmb, ParArrayND<Real> &a,
                  const IndexRange &ib, const IndexRange &jb) {
   // applyBounds() is a Hack.  This needs to go, see TODO above.
 
+  bool vec = a.GetDim(4) == 3;
   if (pmb->boundary_flag[BoundaryFace::outer_x1] == BoundaryFlag::reflect) {
     for (int n = 0; n < a.GetDim(4); n++) {
+      Real reflect = (n == 0 && vec ? -1.0 : 1.0);
       for (int j = 0; j <= jb.e + NGHOST; j++) {
         for (int i = ib.e + 1; i <= ib.e + NGHOST; i++) {
-          a(n, 0, j, i) = a(n, 0, j, 2 * ib.e - i + 1);
+          a(n, 0, j, i) = reflect * a(n, 0, j, 2 * ib.e - i + 1);
         }
       }
     }
@@ -58,9 +60,10 @@ void applyBounds(std::shared_ptr<MeshBlock> pmb, ParArrayND<Real> &a,
 
   if (pmb->boundary_flag[BoundaryFace::inner_x1] == BoundaryFlag::reflect) {
     for (int n = 0; n < a.GetDim(4); n++) {
+      Real reflect = (n == 0 && vec ? -1.0 : 1.0);
       for (int j = 0; j <= jb.e + NGHOST; j++) {
         for (int i = 0; i < ib.s; i++) {
-          a(n, 0, j, i) = a(n, 0, j, 2 * ib.s - i - 1);
+          a(n, 0, j, i) = reflect * a(n, 0, j, 2 * ib.s - i - 1);
         }
       }
     }
@@ -68,9 +71,10 @@ void applyBounds(std::shared_ptr<MeshBlock> pmb, ParArrayND<Real> &a,
 
   if (pmb->boundary_flag[BoundaryFace::outer_x2] == BoundaryFlag::reflect) {
     for (int n = 0; n < a.GetDim(4); n++) {
+      Real reflect = (n == 1 && vec ? -1.0 : 1.0);
       for (int j = jb.e + 1; j <= jb.e + NGHOST; j++) {
         for (int i = 0; i <= ib.e + NGHOST; i++) {
-          a(n, 0, j, i) = a(n, 0, 2 * jb.e - j + 1, i);
+          a(n, 0, j, i) = reflect * a(n, 0, 2 * jb.e - j + 1, i);
         }
       }
     }
@@ -78,9 +82,10 @@ void applyBounds(std::shared_ptr<MeshBlock> pmb, ParArrayND<Real> &a,
 
   if (pmb->boundary_flag[BoundaryFace::inner_x2] == BoundaryFlag::reflect) {
     for (int n = 0; n < a.GetDim(4); n++) {
+      Real reflect = (n == 1 && vec ? -1.0 : 1.0);
       for (int j = 0; j < jb.s; j++) {
         for (int i = 0; i <= ib.e + NGHOST; i++) {
-          a(n, 0, j, i) = a(n, 0, 2 * jb.s - j - 1, i);
+          a(n, 0, j, i) = reflect * a(n, 0, 2 * jb.s - j - 1, i);
         }
       }
     }

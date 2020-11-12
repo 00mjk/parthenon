@@ -113,6 +113,7 @@ void BoundaryValues::RestrictGhostCellsOnSameLevel(const NeighborBlock &nb, int 
   std::shared_ptr<MeshBlock> pmb = GetBlockPointer();
   MeshRefinement *pmr = pmb->pmr.get();
 
+  int ndim = pmb->pmy_mesh->ndim;
   const IndexDomain interior = IndexDomain::interior;
   IndexRange cib = pmb->c_cellbounds.GetBoundsI(interior);
   IndexRange cjb = pmb->c_cellbounds.GetBoundsJ(interior);
@@ -205,6 +206,9 @@ void BoundaryValues::ProlongateGhostCells(const NeighborBlock &nb, int si, int e
   std::shared_ptr<MeshBlock> pmb = GetBlockPointer();
   auto &pmr = pmb->pmr;
 
+  int ndim = pmb->pmy_mesh->ndim;
+  const IndexDomain interior = IndexDomain::interior;
+
   for (auto cc_pair : pmr->pvars_cc_) {
     ParArrayND<Real> var_cc = std::get<0>(cc_pair);
     ParArrayND<Real> coarse_cc = std::get<1>(cc_pair);
@@ -270,7 +274,7 @@ void BoundaryValues::ProlongateGhostCells(const NeighborBlock &nb, int si, int e
   // calculate the loop limits for the finer grid
   int fsi, fei, fsj, fej, fsk, fek;
 
-  const IndexDomain interior = IndexDomain::interior;
+  // const IndexDomain interior = IndexDomain::interior;
   IndexRange cib = pmb->c_cellbounds.GetBoundsI(interior);
   IndexRange cjb = pmb->c_cellbounds.GetBoundsJ(interior);
   IndexRange ckb = pmb->c_cellbounds.GetBoundsK(interior);
